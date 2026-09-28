@@ -1,0 +1,13 @@
+apiVersion: v2
+name: bracket
+description: Bracket — passive age-band inference service with graduated safety posture
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+home: https://github.com/your-org/bracket
+maintainers:
+  - name: Bracket Team
+keywords:
+  - safety
+  - age-inference
+  - moderation

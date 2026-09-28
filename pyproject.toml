@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "bracket"
+version = "0.1.0"
+description = "Passive age-band inference for AI chat products — driving graduated safety"
+requires-python = ">=3.11"
+dependencies = []  # runtime deps in requirements.txt
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+# explicit_package_bases resolves the "Source file found twice" dual-module-name
+# error that occurs with a src/-layout project where src/ has an __init__.py and
+# mypy discovers band_inference.service via both the src/ package root and the
+# workspace root simultaneously. This is the standard mypy fix for src-layout repos.
+explicit_package_bases = true
+exclude = ["src/ui", "tests"]
+
+[[tool.mypy.overrides]]
+# langdetect has no py.typed marker or bundled stubs; suppress import-untyped
+# globally rather than scattering type: ignore comments through language_detect.py.
+module = "langdetect.*"
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "--strict-markers -q"
+# Put the repo root on sys.path so `import src...` resolves when pytest is
+# invoked directly. Without this, only `python -m pytest` works (the -m flag
+# adds the cwd to sys.path); bare `pytest` fails with ModuleNotFoundError.
+pythonpath = ["."]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["src/ui/*", "*/test_*"]

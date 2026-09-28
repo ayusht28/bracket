@@ -1,0 +1,66 @@
+Bracket
+Copyright 2026 Ayush Thakare
+
+This product includes software developed as AgeBand
+(https://github.com/asishbose/ageBand), Copyright 2026 Asish Bose,
+licensed under the Apache License, Version 2.0.
+
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+
+------------------------------------------------------------------------
+MODIFICATIONS MADE IN THIS FORK
+------------------------------------------------------------------------
+
+Per Apache 2.0 Section 4(b), the following files carry modifications or
+are newly added relative to the upstream AgeBand project.
+
+ADDED
+  src/bracket_eval/pipeline.py       Synchronous deterministic pipeline
+                                     driver for offline evaluation.
+  src/bracket_eval/metrics.py        Confusion matrix, Expected/Maximum
+                                     Calibration Error, Brier score,
+                                     reliability binning.
+  src/bracket_eval/calibration.py    Asymmetric safety cost function and
+                                     policy-threshold grid search.
+  src/bracket_eval/datasets.py       Held-out and Blog Authorship Corpus
+                                     loaders.
+  src/signal_extraction/hinglish.py  Code-mixed Hindi-English cue lexicon
+                                     and language detection.
+  scripts/run_eval.py                Evaluation CLI.
+  scripts/_build_holdout.py          Held-out dataset builder.
+  data/holdout_en.jsonl              Held-out English transcripts.
+  data/holdout_hinglish.jsonl        Held-out Hinglish transcripts.
+  data/adversarial.jsonl             Evasion suite.
+  tests/unit/bracket_eval/           40 tests covering the above.
+  docs/NOVELTIES.md                  What this fork adds, and why.
+  RUN_AND_DEPLOY.md                  Run and deployment guide.
+
+MODIFIED
+  src/signal_extraction/keyword_extractor.py
+      Routes code-mixed Hindi-English turns to the Hinglish lexicon
+      before the English-abstention gate. English path unchanged.
+  src/signal_extraction/lexicon.py
+      assign_weight_any() and band_hint_any() now resolve Hinglish
+      subtypes before falling back to the English default.
+  pyproject.toml
+      Added pytest pythonpath = ["."] so bare `pytest` works.
+  scripts/notebook_server_utils.py
+      Fixed _is_colab(): importlib.util.find_spec() RAISES
+      ModuleNotFoundError when the PARENT package is absent rather
+      than returning None. On any machine without the `google`
+      namespace package installed, environment detection crashed
+      instead of reporting "not Colab", breaking the notebook path.
+      Now catches that and returns False.
+  tests/unit/test_notebook_server_utils.py
+      Same guard applied in
+      test_is_colab_returns_false_when_google_colab_absent.
+  README.md
+      Rewritten for this fork. Original preserved at
+      docs/UPSTREAM_README.md.
+
+UNCHANGED
+  The pipeline architecture, planner-supervisor loop, deterministic
+  guard shell, confidence formula, policy table, orchestration,
+  FastAPI service, React UI, Docker image and Helm chart are
+  Asish Bose's design and are used as-is.

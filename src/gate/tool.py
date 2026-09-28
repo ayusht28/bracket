@@ -1,0 +1,20 @@
+"""tinyagent / openai-agents function_tool wrapper for the gate check."""
+
+from __future__ import annotations
+
+from agents import function_tool  # openai-agents SDK
+
+from src.contracts.models import BandContext
+from src.gate.gate_service import GateService
+
+
+@function_tool
+def gate_check(ctx_json: str) -> str:
+    """Check the gate for a session.
+
+    Input: BandContext as JSON.
+    Output: GateResult as JSON.
+    """
+    ctx = BandContext.model_validate_json(ctx_json)
+    result = GateService().check(ctx)
+    return result.model_dump_json()
